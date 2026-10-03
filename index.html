@@ -1,0 +1,1454 @@
+<!DOCTYPE html>
+ <html lang="pt-BR"> <head> <meta charset="utf-8"/> <meta content="width=device-width,initial-scale=1,viewport-fit=cover" name="viewport"/> <meta content="#625bf5" name="theme-color"/> <title>NeuroPlay | Laboratório Cognitivo</title> <style>
+:root{
+  --bg:#070914;--bg-2:#0b0e1c;--surface:rgba(17,21,39,.72);--surface-solid:#111527;--surface-2:rgba(255,255,255,.045);
+  --text:#f4f6ff;--muted:#8e96b2;--line:rgba(255,255,255,.085);--primary:#766cff;--primary-2:#a39dff;
+  --cyan:#5ee7ff;--good:#42e3a2;--warn:#ffc85a;--danger:#ff647c;--soft:rgba(118,108,255,.13);
+  --shadow:0 18px 60px rgba(0,0,0,.24);--shadow-lg:0 35px 100px rgba(0,0,0,.42);--r:24px;
+  --focus:0 0 0 4px rgba(118,108,255,.2);--ease:cubic-bezier(.2,.8,.2,1)
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;min-height:100vh;background:
+  radial-gradient(900px 500px at 10% -5%,rgba(118,108,255,.17),transparent 60%),
+  radial-gradient(700px 500px at 100% 20%,rgba(94,231,255,.08),transparent 60%),
+  linear-gradient(180deg,#070914 0%,#090b17 45%,#060811 100%);
+  color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  overflow-x:hidden
+}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.24;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:42px 42px;mask-image:linear-gradient(to bottom,black,transparent 80%);z-index:-2}
+body:after{content:"";position:fixed;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,rgba(118,108,255,.11),transparent 68%);left:50%;top:30%;transform:translate(-50%,-50%);pointer-events:none;filter:blur(10px);z-index:-1}
+button,input,select{font:inherit}button{cursor:pointer}button:disabled{opacity:.42;cursor:not-allowed}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:none;box-shadow:var(--focus)}
+.app{width:min(1240px,100%);margin:auto;min-height:100vh;padding-bottom:118px;position:relative}
+.top{height:86px;padding:0 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;position:sticky;top:0;z-index:20;background:linear-gradient(180deg,rgba(7,9,20,.9),rgba(7,9,20,.55));backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-bottom:1px solid rgba(255,255,255,.035)}
+.top:after{content:"";position:absolute;left:24px;right:24px;bottom:-1px;height:1px;background:linear-gradient(90deg,transparent,rgba(118,108,255,.55),rgba(94,231,255,.35),transparent);opacity:.7}
+.brand{display:flex;align-items:center;gap:13px}.logo{width:45px;height:45px;border-radius:15px;background:linear-gradient(135deg,#7167ff,#a69fff 55%,#58ddf5);display:grid;place-items:center;color:#fff;font-size:22px;box-shadow:0 10px 35px rgba(118,108,255,.35);position:relative;overflow:hidden}.logo:after{content:"";position:absolute;inset:-40%;background:linear-gradient(120deg,transparent 35%,rgba(255,255,255,.45),transparent 65%);transform:translateX(-70%) rotate(12deg);animation:logoSweep 5s infinite}.brand strong{display:block;font-size:16px;letter-spacing:2.3px;font-weight:950}.brand small{display:block;color:#737b99;font-size:9px;letter-spacing:1.4px;text-transform:uppercase;margin-top:2px}.user-chip{display:flex;align-items:center;gap:10px;color:#aeb5cf;font-size:12px}.avatar{width:38px;height:38px;border-radius:13px;background:linear-gradient(135deg,rgba(118,108,255,.2),rgba(94,231,255,.12));border:1px solid rgba(118,108,255,.3);color:#c9c5ff;display:grid;place-items:center;font-weight:950;box-shadow:inset 0 0 20px rgba(118,108,255,.08)}
+main{padding:22px 24px}.screen{display:none}.screen.active{display:block;animation:screenIn .42s var(--ease)}
+@keyframes screenIn{from{opacity:0;transform:translateY(12px) scale(.992)}to{opacity:1;transform:none}}@keyframes logoSweep{0%,65%{transform:translateX(-80%) rotate(12deg)}85%,100%{transform:translateX(100%) rotate(12deg)}}
+.hero{background:linear-gradient(135deg,rgba(17,21,39,.94),rgba(25,28,59,.9));border:1px solid rgba(255,255,255,.09);color:#fff;border-radius:32px;padding:46px;min-height:410px;display:grid;grid-template-columns:1.2fr .8fr;align-items:center;overflow:hidden;position:relative;box-shadow:var(--shadow-lg);isolation:isolate}
+.hero:before{content:"";position:absolute;width:540px;height:540px;border-radius:50%;right:-190px;top:-235px;background:radial-gradient(circle at 35% 55%,rgba(118,108,255,.34),rgba(118,108,255,.04) 55%,transparent 70%);z-index:-1}.hero:after{content:"";position:absolute;inset:auto 0 0;height:42%;background:linear-gradient(180deg,transparent,rgba(0,0,0,.2));z-index:-1}.hero>div:first-child{position:relative;z-index:2}.hero h1{font-size:clamp(36px,5vw,62px);line-height:.98;margin:18px 0;max-width:760px;letter-spacing:-2.8px;background:linear-gradient(180deg,#fff 0%,#dfe3ff 80%);-webkit-background-clip:text;background-clip:text;color:transparent}.hero p{color:#aeb5ce;line-height:1.7;max-width:650px;font-size:15px}.brain{font-size:145px;text-align:center;z-index:1;filter:drop-shadow(0 25px 45px rgba(0,0,0,.38));animation:brainFloat 5s ease-in-out infinite;transform-origin:center}.brain:after{content:""}.eyebrow,.tag{display:inline-flex;align-items:center;padding:7px 10px;border-radius:999px;background:var(--soft);border:1px solid rgba(118,108,255,.2);color:#aaa6ff;font-size:9px;font-weight:950;letter-spacing:1px}.hero .eyebrow{background:rgba(118,108,255,.12);color:#c9c5ff;border-color:rgba(118,108,255,.28)}
+@keyframes brainFloat{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-10px) rotate(2deg)}}
+.btn{border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:12px 18px;background:linear-gradient(135deg,#766cff,#6158ec);color:#fff;font-weight:900;transition:transform .18s var(--ease),box-shadow .18s var(--ease),filter .18s;box-shadow:0 10px 28px rgba(118,108,255,.22);position:relative;overflow:hidden}.btn:before{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.14),transparent 70%);transform:translateX(-100%);transition:.45s}.btn:hover{transform:translateY(-2px);box-shadow:0 15px 36px rgba(118,108,255,.3);filter:brightness(1.07)}.btn:hover:before{transform:translateX(100%)}.btn.secondary{background:rgba(255,255,255,.055);color:#d9ddf2;border-color:var(--line);box-shadow:none}.btn.ghost{background:transparent;color:#aaa6ff;border-color:rgba(118,108,255,.25);box-shadow:none}.btn.full{width:100%}
+.section{display:flex;justify-content:space-between;align-items:end;gap:10px;margin:34px 0 15px}.section h2{margin:0;font-size:22px;letter-spacing:-.5px}.muted{color:var(--muted);font-size:13px;line-height:1.65}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}.card{background:linear-gradient(145deg,rgba(20,24,43,.82),rgba(13,17,31,.78));border:1px solid var(--line);border-radius:var(--r);padding:20px;box-shadow:var(--shadow);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);position:relative;overflow:hidden}.card:before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.035),transparent 35%);pointer-events:none}.card:hover{border-color:rgba(118,108,255,.2)}.card h3{margin:0 0 7px;letter-spacing:-.25px}.icon{font-size:29px;margin-bottom:11px;filter:drop-shadow(0 8px 15px rgba(0,0,0,.22))}.metric{font-size:34px;font-weight:950;margin:9px 0;letter-spacing:-1px}.bar{height:7px;background:rgba(255,255,255,.065);border-radius:99px;overflow:hidden}.bar i{height:100%;display:block;background:linear-gradient(90deg,var(--primary),var(--cyan));border-radius:99px;transition:width .65s var(--ease);box-shadow:0 0 14px rgba(118,108,255,.35)}
+.notice{padding:14px 15px;background:rgba(255,200,90,.055);border:1px solid rgba(255,200,90,.18);border-radius:15px;color:#c9b47c;font-size:12px;line-height:1.55}.train-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}.train{cursor:pointer;transition:transform .22s var(--ease),border-color .22s,box-shadow .22s;min-height:225px}.train:hover{transform:translateY(-6px);box-shadow:0 24px 55px rgba(0,0,0,.28);border-color:rgba(118,108,255,.3)}.train:after{content:"";position:absolute;right:-55px;bottom:-65px;width:170px;height:170px;border-radius:50%;background:radial-gradient(circle,rgba(118,108,255,.18),transparent 68%);transition:.3s}.train:hover:after{transform:scale(1.25)}.play{color:#aaa6ff;font-weight:950;font-size:12px;margin-top:18px;letter-spacing:.4px}.session-card{display:flex;align-items:center;gap:14px;margin-top:15px}.timer{font-variant-numeric:tabular-nums;background:rgba(118,108,255,.11);border:1px solid rgba(118,108,255,.18);color:#bcb8ff;border-radius:12px;padding:10px 12px;font-weight:950;white-space:nowrap;box-shadow:inset 0 0 18px rgba(118,108,255,.05)}
+.game{max-width:900px;margin:auto}.game>button{margin-bottom:3px}.game-head{display:flex;justify-content:space-between;gap:10px;align-items:center}.game-head h2{margin:8px 0;font-size:25px;letter-spacing:-.7px}.progress{height:8px;background:rgba(255,255,255,.065);border-radius:99px;overflow:hidden;margin-top:15px}.progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--primary),var(--cyan));transition:width .35s var(--ease);box-shadow:0 0 15px rgba(94,231,255,.25)}.gamebox{min-height:430px;display:grid;place-items:center;text-align:center;padding:35px 15px}.sequence{font-size:48px;font-weight:950;letter-spacing:8px;margin:24px 0;text-shadow:0 0 28px rgba(118,108,255,.22)}.answers{display:flex;flex-wrap:wrap;justify-content:center;gap:10px}.choice{border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.055);color:#eef0ff;border-radius:15px;padding:14px 20px;min-width:66px;font-size:20px;font-weight:900;transition:.18s var(--ease);box-shadow:inset 0 1px rgba(255,255,255,.04)}.choice:hover{background:rgba(118,108,255,.13);border-color:rgba(118,108,255,.3);transform:translateY(-2px);box-shadow:0 10px 25px rgba(0,0,0,.2)}.choice.correct{background:rgba(66,227,162,.1);border-color:rgba(66,227,162,.35);color:#6ff0b9}.choice.wrong{background:rgba(255,100,124,.1);border-color:rgba(255,100,124,.35);color:#ff8b9e}.stimulus{font-size:90px;margin:18px;text-shadow:0 0 30px rgba(118,108,255,.2)}.game-actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}.result{text-align:center}.score{font-size:72px;line-height:1;color:#aaa6ff;font-weight:950;margin:16px;text-shadow:0 0 35px rgba(118,108,255,.2)}.tiny{font-size:11px;color:#707894}.testbox{max-width:860px;margin:auto}.question{font-size:23px;font-weight:900;margin:26px 0;letter-spacing:-.5px}.input,.select{width:100%;padding:13px 14px;border:1px solid var(--line);border-radius:13px;background:rgba(255,255,255,.045);color:var(--text);outline:0}.input::placeholder{color:#5f6782}.input:focus,.select:focus{border-color:rgba(118,108,255,.6);box-shadow:var(--focus)}.select option{background:#111527;color:#fff}.test-options{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:16px}.test-option{text-align:left;border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--text);border-radius:15px;padding:16px;font-weight:750;transition:.18s}.test-option:hover{border-color:rgba(118,108,255,.35);background:rgba(118,108,255,.07);transform:translateY(-1px)}.test-option small{display:block;color:var(--muted);font-weight:500;margin-top:4px}.test-stepper{display:flex;gap:6px;margin:0 0 18px}.step{height:7px;flex:1;background:rgba(255,255,255,.065);border-radius:99px}.step.active{background:linear-gradient(90deg,var(--primary),var(--cyan));box-shadow:0 0 12px rgba(118,108,255,.25)}
+.research-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:15px}.field{margin-bottom:13px}.field label{display:block;font-size:10px;font-weight:950;margin-bottom:7px;color:#aab1c9;letter-spacing:.5px;text-transform:uppercase}.table-wrap{overflow:auto}.table{border-collapse:collapse;width:100%;min-width:600px}.table th,.table td{border-bottom:1px solid var(--line);padding:12px;text-align:left;font-size:12px}.table th{color:#8991ad;font-size:10px;text-transform:uppercase;letter-spacing:.7px}.empty{text-align:center;padding:25px;color:var(--muted)}.chart{height:200px;display:flex;align-items:end;gap:16px;padding:18px}.col{flex:1;text-align:center}.col i{display:block;border-radius:10px 10px 4px 4px;background:linear-gradient(180deg,#817aff,#4d48ad);min-height:8px;box-shadow:0 0 25px rgba(118,108,255,.18)}.col span{display:block;font-size:10px;color:var(--muted);margin-top:8px}
+.nav{position:fixed;z-index:30;left:50%;bottom:17px;transform:translateX(-50%);background:rgba(12,15,29,.82);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);border:1px solid rgba(255,255,255,.1);border-radius:22px;padding:7px;box-shadow:0 20px 60px rgba(0,0,0,.38),inset 0 1px rgba(255,255,255,.05);display:flex;gap:3px;max-width:calc(100vw - 24px);overflow:auto}.nav button{border:0;background:transparent;color:#737b98;padding:11px 13px;border-radius:15px;font-size:11px;font-weight:900;white-space:nowrap;transition:.2s var(--ease)}.nav button:hover{color:#dce0f4;background:rgba(255,255,255,.04)}.nav button.active{background:linear-gradient(135deg,rgba(118,108,255,.2),rgba(94,231,255,.08));color:#c6c2ff;box-shadow:inset 0 1px rgba(255,255,255,.06),0 5px 18px rgba(118,108,255,.1)}
+.modal{position:fixed;inset:0;background:rgba(2,4,12,.72);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);z-index:50;display:none;place-items:center;padding:18px}.modal.show{display:grid}.modalbox{background:linear-gradient(145deg,#151a30,#0e1222);border:1px solid rgba(255,255,255,.1);border-radius:25px;padding:25px;width:min(480px,100%);box-shadow:var(--shadow-lg)}.modalbox h2{margin-top:0}.toast{position:fixed;z-index:60;top:100px;right:22px;background:rgba(17,21,39,.92);border:1px solid rgba(118,108,255,.25);backdrop-filter:blur(16px);color:#fff;border-radius:14px;padding:13px 16px;font-size:12px;display:none;box-shadow:0 18px 45px rgba(0,0,0,.3)}
+/* Bateria cognitiva */
+.battery-intro{display:grid;grid-template-columns:1.2fr .8fr;gap:15px;align-items:stretch;margin-top:20px}.battery-stat{display:flex;flex-direction:column;justify-content:center;background:linear-gradient(145deg,rgba(118,108,255,.1),rgba(94,231,255,.035));border:1px solid rgba(118,108,255,.16);border-radius:18px;padding:17px}.battery-stat strong{font-size:27px}.battery-stat span{font-size:11px;color:var(--muted);margin-top:3px}.battery-progress{height:8px;background:rgba(255,255,255,.065);border-radius:99px;overflow:hidden;margin:18px 0}.battery-progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--primary),var(--cyan));transition:width .35s var(--ease);box-shadow:0 0 15px rgba(94,231,255,.2)}.battery-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:11px;margin-top:17px}.battery-card{border:1px solid var(--line);background:rgba(255,255,255,.035);border-radius:17px;padding:16px;text-align:left;transition:.18s}.battery-card:hover{border-color:rgba(118,108,255,.24);transform:translateY(-2px)}.battery-card b{display:block;margin-bottom:4px}.battery-card small{display:block;color:var(--muted);line-height:1.45}.battery-card .tag{margin-top:11px}.battery-choice{min-width:120px}.stimulus-label{font-size:10px;color:#747d99;font-weight:950;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}.target-preview{display:inline-flex;align-items:center;justify-content:center;min-width:115px;min-height:115px;padding:18px;border-radius:27px;background:radial-gradient(circle at 50% 40%,rgba(118,108,255,.12),rgba(255,255,255,.025));border:1px solid rgba(118,108,255,.16);font-size:58px;font-weight:950;margin:10px auto 20px;box-shadow:inset 0 0 35px rgba(118,108,255,.04),0 15px 45px rgba(0,0,0,.18)}.choice-grid{display:grid;grid-template-columns:repeat(4,minmax(90px,1fr));gap:10px;max-width:620px;margin:auto}.choice-grid .choice{width:100%}.trial-note{max-width:560px;margin:14px auto 0;padding:10px 12px;border-radius:12px;background:rgba(255,255,255,.028);border:1px solid var(--line);font-size:11px;color:var(--muted)}.task-kicker{font-size:10px;color:#aaa6ff;font-weight:950;letter-spacing:1px;text-transform:uppercase}.no-go-stage{min-height:270px;display:grid;place-items:center}.response-pad{min-width:220px;min-height:70px;font-size:18px}.rt-live{font-variant-numeric:tabular-nums;font-weight:900;color:#aaa6ff;font-size:12px;margin-top:10px}.difficulty-pill{display:inline-flex;gap:5px;align-items:center;padding:5px 8px;border-radius:99px;background:rgba(118,108,255,.08);color:#aaa6ff;font-size:10px;font-weight:900}.stroop-word{font-size:50px;font-weight:950;letter-spacing:1px;margin:20px 0;text-shadow:0 0 25px rgba(255,255,255,.06)}.grid-board{display:grid;grid-template-columns:repeat(3,78px);gap:10px;justify-content:center;margin:20px auto}.grid-cell{height:78px;border:1px solid var(--line);border-radius:15px;background:rgba(255,255,255,.045);color:var(--text);font-size:22px;font-weight:900;transition:.16s}.grid-cell:hover{background:rgba(118,108,255,.1);border-color:rgba(118,108,255,.3);transform:scale(1.03)}.grid-cell.active{background:rgba(118,108,255,.15);border-color:#8b84ff;color:#c9c5ff;box-shadow:0 0 22px rgba(118,108,255,.16)}.grid-cell.target{box-shadow:0 0 0 4px rgba(118,108,255,.12)}.rt-note{margin-top:14px;font-size:11px;color:var(--muted)}.battery-result{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0}.battery-result .metric-card{background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:16px;padding:15px;text-align:center}.battery-result .metric-card strong{display:block;font-size:27px}.battery-result .metric-card span{font-size:11px;color:var(--muted)}
+@media(max-width:900px){.hero{grid-template-columns:1fr}.brain{position:absolute;right:20px;bottom:-15px;opacity:.15}.grid,.train-grid,.research-grid{grid-template-columns:1fr}.test-options{grid-template-columns:1fr}}
+@media(max-width:640px){body{background:#070914}.app{padding-bottom:96px}.top{height:70px;padding:0 13px}.top:after{left:13px;right:13px}.brand small{display:none}.brand strong{font-size:14px;letter-spacing:1.7px}.logo{width:39px;height:39px}.user-chip span{display:none}main{padding:12px}.hero{border-radius:25px;padding:27px 20px;min-height:410px}.hero h1{font-size:34px;letter-spacing:-1.5px}.hero p{font-size:14px}.hero .btn{width:100%}.section{margin:24px 0 11px}.section h2{font-size:19px}.card{padding:16px;border-radius:18px}.session-card{align-items:stretch;flex-wrap:wrap}.session-card>div:nth-child(2){flex:1 0 calc(100% - 70px)}.session-card .btn{width:100%}.gamebox{min-height:350px;padding:25px 5px}.game-head{align-items:flex-start}.game-head h2{font-size:21px}.sequence{font-size:30px;letter-spacing:4px}.stimulus{font-size:68px}.choice{min-width:58px;padding:12px 16px}.nav{bottom:7px;width:calc(100vw - 12px);justify-content:flex-start}.nav button{padding:9px 8px;font-size:10px}.toast{left:12px;right:12px;top:82px;text-align:center}.table{min-width:540px}.battery-intro{grid-template-columns:1fr}.battery-grid{grid-template-columns:1fr}.battery-result{grid-template-columns:1fr}.choice-grid{grid-template-columns:repeat(2,minmax(100px,1fr))}.grid-board{grid-template-columns:repeat(3,64px)}.grid-cell{height:64px}.target-preview{min-width:92px;min-height:92px;font-size:48px}.stroop-word{font-size:38px}}
+@media(max-width:380px){.hero h1{font-size:30px}.nav button{padding:8px 6px}.score{font-size:55px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}.brain,.logo:after{animation:none!important}}
+
+.brand-status{font-size:8px;color:#42e3a2;margin-left:-7px;filter:drop-shadow(0 0 7px rgba(66,227,162,.7));animation:statusPulse 2s ease-in-out infinite}@keyframes statusPulse{0%,100%{opacity:.55}50%{opacity:1}} .hero-cta{margin-top:10px;min-width:190px}
+
+/* ===== NEUROPLAY EXPERIENCE 2.0 ===== */
+:root{--np-bg:#070914;--np-panel:#0d1020;--np-panel2:#11162a;--np-line:rgba(255,255,255,.09);--np-text:#f4f6ff;--np-muted:#8d96b3;--np-purple:#8a7dff;--np-cyan:#55e7ff;--np-green:#53e2a0;--np-shadow:0 24px 80px rgba(0,0,0,.35)}
+body{background:radial-gradient(circle at 10% -10%,rgba(126,104,255,.18),transparent 30%),radial-gradient(circle at 90% 10%,rgba(70,215,255,.10),transparent 25%),#070914!important;color:var(--np-text)}
+.app{width:min(1240px,100%);padding-bottom:112px}.top{height:82px}.brand strong{color:#fff;letter-spacing:1.5px}.brand small{color:#7d87a5}.logo{background:linear-gradient(135deg,#7668ff,#3eddf4);box-shadow:0 0 35px rgba(116,103,255,.28)}.user-chip{color:#aeb6cf}.avatar{background:rgba(138,125,255,.14);border:1px solid rgba(138,125,255,.3);color:#b9b1ff}
+main{padding:14px 20px}.screen.active{animation:npIn .38s cubic-bezier(.2,.8,.2,1)}@keyframes npIn{from{opacity:0;transform:translateY(12px) scale(.99)}to{opacity:1;transform:none}}
+.home-hero,.page-hero{position:relative;overflow:hidden;border:1px solid var(--np-line);background:linear-gradient(135deg,rgba(18,22,43,.98),rgba(10,13,27,.94));border-radius:30px;box-shadow:var(--np-shadow)}
+.home-hero{min-height:390px;padding:48px;display:grid;grid-template-columns:1.35fr .65fr;align-items:center}.home-hero:after{content:"";position:absolute;inset:auto -10% -55% 30%;height:340px;background:radial-gradient(circle,rgba(101,86,255,.18),transparent 65%);pointer-events:none}.hero-copy{position:relative;z-index:2;max-width:720px}.eyebrow,.section-kicker{font-size:10px;font-weight:900;letter-spacing:2px;color:#8994b7}.pulse-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--np-green);box-shadow:0 0 12px var(--np-green);margin-right:7px}.home-hero h1{font-size:clamp(38px,5vw,66px);line-height:.98;letter-spacing:-3px;max-width:780px;margin:18px 0}.home-hero p{font-size:16px;line-height:1.75;color:#aeb7d2;max-width:690px}.hero-actions{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:28px}.hero-meta{display:flex;gap:18px;color:#77819f;font-size:11px;margin-top:22px}.neuro-orb{position:relative;width:310px;height:310px;display:grid;place-items:center;margin:auto}.orb-core{width:150px;height:150px;border-radius:50%;display:grid;place-items:center;font-size:72px;background:radial-gradient(circle at 35% 30%,#373c77,#12162e 68%);border:1px solid rgba(138,125,255,.45);box-shadow:0 0 80px rgba(117,100,255,.22),inset 0 0 40px rgba(255,255,255,.04);position:relative;z-index:2}.neuro-orb i{position:absolute;border:1px solid rgba(85,231,255,.18);border-radius:50%;inset:22px;animation:orbit 9s linear infinite}.neuro-orb i:nth-child(2){inset:50px;animation-duration:6s;border-color:rgba(138,125,255,.25)}.neuro-orb i:nth-child(3){inset:78px;animation-duration:4s;border-color:rgba(83,226,160,.18)}@keyframes orbit{to{transform:rotate(360deg)}}
+.dashboard-head{display:flex;justify-content:space-between;align-items:end;margin:42px 0 18px}.dashboard-head h2,.page-hero h2{margin:6px 0 0;font-size:30px;letter-spacing:-1px}.live-pill{font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--np-green);border:1px solid rgba(83,226,160,.2);background:rgba(83,226,160,.07);border-radius:99px;padding:7px 10px}.score-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.score-card,.feature-card,.mini-card,.page-hero,.train-card,.session-panel,.science-strip,.profile-card,.insight-card,.activity-card,.transfer-card,.methodology-card,.about-card,.about-story{background:linear-gradient(145deg,rgba(18,22,43,.96),rgba(11,14,29,.96));border:1px solid var(--np-line);box-shadow:0 15px 50px rgba(0,0,0,.2)}.score-card{padding:22px;border-radius:22px;position:relative;overflow:hidden}.score-card:after{content:"";position:absolute;width:130px;height:130px;border-radius:50%;right:-70px;top:-70px;background:rgba(138,125,255,.08)}.score-top{display:flex;justify-content:space-between;align-items:center}.domain-icon{font-size:10px;color:#6f7998;border:1px solid var(--np-line);padding:5px 7px;border-radius:8px}.domain-label{font-size:9px;letter-spacing:1.7px;color:#8993b1}.score-value{font-size:44px;font-weight:900;letter-spacing:-2px;margin:22px 0 12px}.score-card small{display:block;color:#77819f;margin-top:10px}.score-bar,.profile-bar,.transfer-meter{height:5px;background:#1b2138;border-radius:10px;overflow:hidden}.score-bar i,.profile-bar i,.transfer-meter i{display:block;height:100%;background:linear-gradient(90deg,var(--np-purple),var(--np-cyan));border-radius:10px;box-shadow:0 0 14px rgba(85,231,255,.3);transition:width .8s cubic-bezier(.2,.8,.2,1)}
+.feature-grid{display:grid;grid-template-columns:1.5fr .75fr .75fr;gap:14px;margin-top:14px}.feature-card,.mini-card{border-radius:22px;padding:24px}.feature-main{display:flex;gap:22px}.feature-number,.train-index{font-size:10px;color:#67718f;font-weight:900;letter-spacing:1px}.feature-card h3{margin:7px 0;font-size:21px}.feature-card p,.mini-card small{color:#8892ad;line-height:1.65}.mini-card{display:flex;flex-direction:column;gap:9px}.mini-icon{font-size:26px;color:var(--np-cyan)}.pro-note{margin-top:14px;background:rgba(138,125,255,.06)!important;border:1px solid rgba(138,125,255,.18)!important;color:#929bb7!important}
+.page-hero{padding:30px 34px;display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}.page-hero p{max-width:680px;color:#8993ae;line-height:1.6}.page-hero-mark,.analytics-badge{font-size:34px;line-height:.85;font-weight:900;letter-spacing:-2px;color:#7c70ff;text-align:right}.page-hero-mark span,.analytics-badge span{font-size:10px;letter-spacing:3px;color:#55617e}.premium-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.train-card{padding:25px;border-radius:24px;cursor:pointer;transition:.3s transform,.3s border-color,.3s box-shadow}.train-card:hover{transform:translateY(-6px);border-color:rgba(138,125,255,.45);box-shadow:0 25px 65px rgba(74,61,200,.2)}.icon-big{font-size:44px;margin:22px 0 15px;color:#8d83ff}.train-card h3{font-size:23px;margin:9px 0}.train-card p{color:#8791ad;line-height:1.65;min-height:80px}.train-footer{border-top:1px solid var(--np-line);margin-top:20px;padding-top:15px;display:flex;justify-content:space-between;color:#6f7997;font-size:11px}.train-footer b{color:#c5caff}.session-panel{display:flex;align-items:center;gap:24px;padding:22px;border-radius:24px;margin-top:14px}.session-ring{width:88px;height:88px;border-radius:50%;display:grid;place-content:center;text-align:center;border:1px solid rgba(85,231,255,.25);box-shadow:inset 0 0 30px rgba(85,231,255,.04),0 0 30px rgba(85,231,255,.05)}.session-ring span{font-size:18px;font-weight:900}.session-ring small{font-size:7px;letter-spacing:2px;color:#66718e}.session-copy{flex:1}.session-copy h3{margin:4px 0}.session-copy p{margin:0;color:#7f89a5;font-size:13px}.science-strip{margin-top:14px;padding:18px 22px;border-radius:18px;display:flex;justify-content:space-between;align-items:center}.science-strip span{display:block;color:#7d87a3;font-size:12px;margin-top:4px}
+.game-topline{display:flex;justify-content:space-between;align-items:center}.game .card{background:linear-gradient(145deg,rgba(15,19,37,.98),rgba(9,12,24,.98));border-color:var(--np-line);box-shadow:var(--np-shadow)}.gamebox{min-height:420px;display:grid;place-items:center;padding:42px}.game-intro{text-align:center;max-width:620px}.game-intro-symbol{font-size:58px;color:#8d82ff;margin:20px 0}.game-intro h2{font-size:32px;margin:5px 0}.game-intro p{color:#8490ac}.instruction-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:26px 0}.instruction-steps div{padding:14px;border:1px solid var(--np-line);border-radius:14px;background:rgba(255,255,255,.02)}.instruction-steps b{display:block;color:#7d72ff;font-size:10px}.instruction-steps span{display:block;font-size:11px;color:#9aa3bd;margin-top:7px}.premium-result{text-align:center;max-width:680px;margin:auto}.result-orbit{width:150px;height:150px;border-radius:50%;margin:10px auto 20px;border:1px solid rgba(138,125,255,.35);display:grid;place-content:center;box-shadow:0 0 60px rgba(118,102,255,.14)}.result-orbit .score{font-size:50px}.result-orbit span{font-size:8px;letter-spacing:2px;color:#687390}.result-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:20px 0}.result-grid div{padding:14px;border:1px solid var(--np-line);border-radius:14px}.result-grid b{display:block;font-size:21px}.result-grid small{color:#707b98}
+.battery-welcome{display:grid;grid-template-columns:1fr 230px;gap:20px;padding:28px;border-radius:22px;background:linear-gradient(135deg,rgba(26,30,57,.8),rgba(12,16,31,.8));border:1px solid var(--np-line)}.battery-welcome h2{font-size:31px;margin:10px 0}.battery-welcome p{color:#8d97b1;line-height:1.65;max-width:700px}.battery-facts{display:flex;gap:25px;margin-top:22px}.battery-facts span{font-size:10px;color:#6e7895;text-transform:uppercase;letter-spacing:1px}.battery-facts b{font-size:17px;color:#e9ebf7;display:block}.battery-readiness{display:grid;place-items:center;text-align:center}.readiness-ring{width:125px;height:125px;border-radius:50%;display:grid;place-items:center;border:1px solid rgba(83,226,160,.3);box-shadow:0 0 45px rgba(83,226,160,.07)}.readiness-ring span{font-size:12px;font-weight:900;color:#53e2a0;letter-spacing:2px}.battery-readiness small{color:#687391;font-size:9px;margin-top:-20px}.battery-timeline{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:14px 0}.battery-step{padding:14px;border:1px solid var(--np-line);border-radius:14px;background:rgba(255,255,255,.018)}.battery-step>span{font-size:9px;color:#7d72ff}.battery-step b,.battery-step small{display:block}.battery-step b{font-size:11px;margin-top:10px}.battery-step small{font-size:9px;color:#69738f;margin-top:4px}.protocol-box{display:flex;gap:12px;padding:14px;border:1px solid rgba(85,231,255,.12);background:rgba(85,231,255,.035);border-radius:14px}.protocol-icon{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:rgba(85,231,255,.1);color:var(--np-cyan);font-weight:900}.protocol-box p{margin:4px 0 0;color:#7e89a5;font-size:11px}
+.profile-layout{display:grid;grid-template-columns:1.45fr .75fr;gap:14px}.profile-card,.insight-card,.activity-card,.transfer-card,.methodology-card{border-radius:22px;padding:24px}.profile-head,.card-head{display:flex;justify-content:space-between;align-items:start;margin-bottom:20px}.profile-head h3,.card-head h3{margin:6px 0}.profile-row{display:grid;grid-template-columns:160px 60px 1fr;align-items:center;gap:14px;padding:15px 0;border-bottom:1px solid var(--np-line)}.profile-row:last-child{border:0}.profile-row small{display:block;color:#68728e;font-size:9px;margin-top:3px}.profile-row strong{text-align:right}.insight-card{display:flex;flex-direction:column}.insight-icon{font-size:35px;color:#8c80ff;margin:20px 0 5px}.insight-card h3{font-size:20px}.insight-card p{color:#8892ad;line-height:1.65}.insight-line{height:1px;background:linear-gradient(90deg,#8b7fff,transparent);margin:14px 0}.insight-card small{color:#606b88;font-size:9px}.evolution-grid{display:grid;grid-template-columns:1.3fr .7fr;gap:14px;margin-top:14px}.activity-feed{display:grid;gap:8px}.activity-item{display:grid;grid-template-columns:9px 1fr auto;gap:12px;align-items:center;padding:12px;border:1px solid var(--np-line);border-radius:12px}.activity-dot{width:7px;height:7px;border-radius:50%;background:#8c80ff;box-shadow:0 0 10px #8c80ff}.activity-item b,.activity-item small{display:block}.activity-item small{font-size:9px;color:#68728e;margin-top:3px}.activity-item strong{font-size:16px}.transfer-score{font-size:52px;font-weight:900;letter-spacing:-2px;margin:24px 0 12px}.transfer-card p{line-height:1.6}.transfer-card>small{display:block;color:#626d89;font-size:9px;margin-top:8px}.methodology-card{display:flex;justify-content:space-between;gap:30px;margin-top:14px}.methodology-card p{color:#7e89a5;line-height:1.65;max-width:720px}.method-points{display:flex;flex-direction:column;justify-content:center;gap:9px;color:#8e98b4;font-size:10px}.about-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.about-card{border-radius:22px;padding:24px}.about-card>span{color:#676f8e;font-size:10px}.about-symbol{font-size:42px;color:#8c80ff;margin:22px 0}.about-card h3{font-size:21px}.about-card p{color:#838da9;line-height:1.65;min-height:72px}.about-card small{font-size:9px;color:#5e6985}.about-story{border-radius:24px;margin-top:14px;padding:30px;display:grid;grid-template-columns:1.3fr .7fr;gap:30px;align-items:center}.about-story h3{font-size:25px;max-width:650px}.about-story p{color:#828ca7;line-height:1.7}.story-steps{display:flex;align-items:center;justify-content:center;gap:10px}.story-steps div{display:grid;gap:7px;text-align:center}.story-steps b{width:50px;height:50px;display:grid;place-items:center;border-radius:50%;border:1px solid rgba(138,125,255,.3);color:#8c80ff}.story-steps span{font-size:9px;color:#717b97;text-transform:uppercase}.story-steps i{width:35px;height:1px;background:var(--np-line)}
+.nav{background:rgba(8,10,20,.82)!important;border:1px solid rgba(255,255,255,.09)!important;backdrop-filter:blur(24px);box-shadow:0 18px 60px rgba(0,0,0,.4)!important}.nav button{color:#737e9d!important}.nav button.active{color:#fff!important;background:linear-gradient(135deg,rgba(126,111,255,.25),rgba(70,216,245,.08))!important;border-color:rgba(138,125,255,.22)!important}.btn{border:1px solid rgba(138,125,255,.3)!important;background:linear-gradient(135deg,#7769ff,#5d51e8)!important;box-shadow:0 8px 24px rgba(89,76,232,.22)}.btn.secondary,.btn.ghost{background:rgba(255,255,255,.035)!important;box-shadow:none}.card,.testbox{border-color:var(--np-line)!important;background:linear-gradient(145deg,rgba(17,21,40,.95),rgba(10,13,26,.95))!important}.muted{color:#7f89a5!important}.tag{border-color:rgba(138,125,255,.2)!important;background:rgba(138,125,255,.07)!important;color:#9c94ff!important}.toast{background:#141a30!important;border:1px solid var(--np-line)!important;box-shadow:0 15px 50px rgba(0,0,0,.35)!important}
+@media(max-width:900px){.home-hero{grid-template-columns:1fr}.neuro-orb{display:none}.feature-grid,.profile-layout,.evolution-grid,.about-story{grid-template-columns:1fr}.score-grid,.premium-grid,.about-grid{grid-template-columns:1fr}.battery-timeline{grid-template-columns:1fr 1fr}.battery-welcome{grid-template-columns:1fr}.battery-readiness{display:none}.methodology-card{display:block}.method-points{margin-top:20px}.session-panel{flex-wrap:wrap}.session-copy{min-width:200px}}
+@media(max-width:600px){.home-hero{padding:30px 22px;min-height:500px}.home-hero h1{font-size:39px;letter-spacing:-2px}.home-hero p{font-size:14px}.hero-meta{gap:10px;flex-wrap:wrap}.page-hero{padding:24px}.page-hero-mark,.analytics-badge{display:none}.dashboard-head{align-items:start}.feature-main{display:block}.battery-timeline{grid-template-columns:1fr}.instruction-steps{grid-template-columns:1fr}.gamebox{padding:20px;min-height:430px}.profile-row{grid-template-columns:1fr 55px}.profile-bar{grid-column:1/-1}.science-strip{display:block}.science-strip .btn{margin-top:14px}.story-steps{margin-top:20px}.nav{max-width:calc(100% - 16px)!important}.nav button{font-size:9px!important;padding:9px 5px!important}}
+
+
+/* ===== RESPONSIVE HARDENING 3.0 ===== */
+*,*::before,*::after{box-sizing:border-box}
+html{width:100%;max-width:100%;overflow-x:hidden}
+body{width:100%;max-width:100%;min-width:0;overflow-x:hidden}
+.app,main,.screen,.card,.game,.testbox,.gamebox,.page-hero,.home-hero,.battery-intro,.research-grid,.profile-layout,.evol-grid,.score-grid,.feature-grid,.train-grid,.battery-grid,.battery-result{min-width:0;max-width:100%}
+img,svg,video,canvas{max-width:100%;height:auto}
+button,input,select,textarea{max-width:100%}
+.input,.select{width:100%;min-width:0}
+.game-content,.gamebox,.batteryTaskContent{min-width:0;overflow-wrap:anywhere}
+.choice,.battery-choice,.response-pad,.grid-cell{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.nav{max-width:calc(100% - 24px);overflow-x:auto;overflow-y:hidden;scrollbar-width:none;overscroll-behavior-x:contain;padding-bottom:calc(7px + env(safe-area-inset-bottom))}
+.nav::-webkit-scrollbar{display:none}
+@media (max-width: 900px){
+  .app{padding-bottom:112px}
+  main{padding-left:16px;padding-right:16px}
+  .home-hero,.hero{grid-template-columns:1fr;min-height:auto}
+  .neuro-orb,.brain{display:none}
+  .score-grid,.feature-grid,.train-grid,.profile-layout,.evol-grid,.research-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .session-panel{align-items:flex-start}
+  .game{width:100%}
+  .game-head{flex-wrap:wrap}
+  .game-head> b,.game-head>.timer{margin-left:auto}
+  .choice-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+}
+@media (max-width: 640px){
+  .app{padding-bottom:104px}
+  .top{gap:9px}
+  .user-chip span{max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  main{padding:8px 12px 20px}
+  .home-hero{padding:28px 20px;min-height:0;border-radius:24px}
+  .home-hero h1{font-size:clamp(32px,9vw,42px);line-height:1.02}
+  .page-hero{padding:22px 18px;border-radius:22px}
+  .section{gap:8px;align-items:flex-start;flex-wrap:wrap}
+  .score-grid,.feature-grid,.train-grid,.profile-layout,.evol-grid,.research-grid,.battery-result{grid-template-columns:1fr}
+  .score-card,.feature-card,.train-card,.card,.methodology-card,.about-card,.about-story{padding:16px}
+  .session-panel{padding:16px;flex-direction:column}
+  .session-actions,.game-actions{width:100%;display:grid;grid-template-columns:1fr;gap:9px}
+  .session-actions .btn,.game-actions .btn{width:100%;min-width:0}
+  .gamebox,.testbox{padding:16px}
+  .game-intro{padding:10px 0}
+  .sequence{font-size:clamp(24px,8vw,34px);letter-spacing:clamp(2px,1.5vw,6px);word-break:break-word}
+  .stimulus{font-size:clamp(52px,17vw,76px)}
+  .choice-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .choice,.battery-choice{min-width:0;width:100%;min-height:54px;padding:12px 10px}
+  .response-pad{width:100%;min-width:0;min-height:58px}
+  .target-preview{min-width:92px;min-height:92px;font-size:48px}
+  .stroop-word{font-size:clamp(34px,11vw,50px);overflow-wrap:anywhere}
+  .grid-board{grid-template-columns:repeat(3,minmax(0,64px));max-width:100%;gap:8px}
+  .grid-cell{width:100%;height:auto;aspect-ratio:1;min-width:0}
+  .battery-timeline{overflow-x:auto;display:flex;gap:8px;padding-bottom:5px;scroll-snap-type:x proximity}
+  .battery-step{min-width:150px;scroll-snap-align:start}
+  .battery-facts{flex-wrap:wrap}
+  .battery-intro{gap:10px}
+  .table-wrap{max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .table{min-width:520px}
+  .modal{padding:12px}
+  .modalbox{width:100%;max-height:calc(100dvh - 24px);overflow:auto;padding:20px}
+  .toast{left:12px;right:12px;top:max(76px,calc(env(safe-area-inset-top) + 70px));max-width:none;text-align:center}
+  .nav{bottom:max(7px,env(safe-area-inset-bottom));width:calc(100% - 12px);border-radius:18px}
+  .nav button{flex:0 0 auto;min-height:42px;padding:9px 10px}
+}
+@media (max-width: 380px){
+  .top{padding-left:10px;padding-right:10px}
+  .brand strong{font-size:13px}
+  .logo{width:36px;height:36px}
+  .avatar{width:32px;height:32px}
+  .home-hero{padding:24px 16px}
+  .home-hero h1{font-size:31px}
+  .page-hero{padding:18px 15px}
+  .choice-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .grid-board{grid-template-columns:repeat(3,minmax(0,58px));gap:6px}
+  .grid-cell{font-size:18px}
+  .nav button{font-size:9px;padding:8px 8px}
+}
+@media (orientation:landscape) and (max-height: 520px){
+  .app{padding-bottom:84px}
+  .top{height:58px}
+  .home-hero{min-height:300px;padding:24px}
+  .nav{bottom:4px}
+  .modalbox{max-height:calc(100dvh - 16px)}
+}
+@media (hover:none){
+  .train:hover,.battery-card:hover,.feature-card:hover,.score-card:hover,.nav button:hover{transform:none}
+}
+@media (prefers-reduced-motion:reduce){
+  .screen.active{animation:none!important}
+}
+</style> </head> <body> <div class="app"> <header class="top"> <div class="brand"><div class="logo">🧠</div><div><strong>NEUROPLAY</strong><small>Laboratório Cognitivo</small></div><span class="brand-status" title="Sistema online">●</span></div> <div class="user-chip"><span id="userName">Participante</span><div class="avatar" id="avatar">P</div></div> </header> <main> <section class="screen active" id="home">
+  <div class="home-hero">
+    <div class="hero-copy">
+      <div class="eyebrow"><span class="pulse-dot"></span> NEUROPLAY LAB · PROTÓTIPO ACADÊMICO</div>
+      <h1>Um laboratório cognitivo dentro do navegador.</h1>
+      <p>Treine, avalie e visualize seu desempenho em tarefas de memória, atenção e funções executivas — em uma experiência desenhada para demonstrar como um protocolo cognitivo pode ser digitalizado.</p>
+      <div class="hero-actions">
+        <button class="btn hero-cta" id="heroStart" type="button">▶ Começar sessão completa</button>
+        <button class="btn ghost hero-secondary" type="button" onclick="openScreen('test')">Explorar bateria →</button>
+      </div>
+      <div class="hero-meta"><span>● 20 min</span><span>● 3 domínios</span><span>● feedback instantâneo</span></div>
+    </div>
+    <div class="neuro-orb" aria-hidden="true"><div class="orb-core">🧠</div><i></i><i></i><i></i></div>
+  </div>
+
+  <div class="dashboard-head"><div><span class="section-kicker">PAINEL PESSOAL</span><h2>Seu perfil cognitivo</h2></div><span class="live-pill">● dados locais</span></div>
+  <div class="score-grid">
+    <article class="score-card memory-card"><div class="score-top"><span class="domain-icon">01</span><span class="domain-label">MEMÓRIA</span></div><div class="score-value" id="homeMemory">0%</div><div class="score-bar"><i id="barMemory" style="width:0%"></i></div><small>Memória de trabalho</small></article>
+    <article class="score-card attention-card"><div class="score-top"><span class="domain-icon">02</span><span class="domain-label">ATENÇÃO</span></div><div class="score-value" id="homeAttention">0%</div><div class="score-bar"><i id="barAttention" style="width:0%"></i></div><small>Seleção e foco</small></article>
+    <article class="score-card executive-card"><div class="score-top"><span class="domain-icon">03</span><span class="domain-label">EXECUTIVAS</span></div><div class="score-value" id="homeExecutive">0%</div><div class="score-bar"><i id="barExecutive" style="width:0%"></i></div><small>Inibição e flexibilidade</small></article>
+  </div>
+
+  <div class="feature-grid">
+    <article class="feature-card feature-main"><div class="feature-number">01</div><div><span class="section-kicker">COMO FUNCIONA</span><h3>Treino → avaliação → interpretação</h3><p>O NeuroPlay separa tarefas de treinamento de uma bateria experimental de transferência. Isso permite explicar em sala a diferença entre <b>praticar uma tarefa</b> e <b>medir desempenho em outra</b>.</p></div></article>
+    <article class="mini-card"><span class="mini-icon">⚡</span><b>Feedback imediato</b><small>Cada resposta altera o progresso da sessão.</small></article>
+    <article class="mini-card"><span class="mini-icon">🧪</span><b>5 paradigmas</b><small>Stroop-like, Go/No-Go, switching, busca e espacial.</small></article>
+  </div>
+  <div class="notice pro-note"><b>Limite científico:</b> o NeuroPlay é um protótipo acadêmico. Seus resultados não são diagnóstico, QI, norma populacional ou evidência de aumento de inteligência.</div>
+</section>
+<section class="screen" id="train">
+  <div class="page-hero"><div><span class="section-kicker">TREINAMENTO</span><h2>Escolha o circuito cognitivo</h2><p>Blocos curtos, objetivos claros e dificuldade progressiva. Cada tarefa foi construída para exercitar uma operação específica.</p></div><div class="page-hero-mark">TRAIN<br><span>MODE</span></div></div>
+  <div class="train-grid premium-grid">
+    <article class="train-card train" data-game="memory"><div class="train-index">01</div><div class="icon-big">▦</div><span class="tag">WORKING MEMORY</span><h3>Memória de trabalho</h3><p>Retenha uma sequência e recupere uma posição específica. A posição perguntada muda entre rodadas.</p><div class="train-footer"><span>6 rodadas</span><b>Iniciar →</b></div></article>
+    <article class="train-card train" data-game="attention"><div class="train-index">02</div><div class="icon-big">⊙</div><span class="tag">SELECTIVE ATTENTION</span><h3>Atenção seletiva</h3><p>Encontre um único alvo em meio a distratores. Símbolo e posição são randomizados.</p><div class="train-footer"><span>6 rodadas</span><b>Iniciar →</b></div></article>
+    <article class="train-card train" data-game="executive"><div class="train-index">03</div><div class="icon-big">↯</div><span class="tag">EXECUTIVE CONTROL</span><h3>Controle executivo</h3><p>Responda sob uma regra que pode mudar. O desafio é adaptar o comportamento sem antecipar o padrão.</p><div class="train-footer"><span>6 rodadas</span><b>Iniciar →</b></div></article>
+  </div>
+  <div class="session-panel"><div class="session-ring"><span id="sessionTimer">20:00</span><small>SESSÃO</small></div><div class="session-copy"><span class="section-kicker">CIRCUITO COMPLETO</span><h3>Uma sessão, três domínios</h3><p>O modo completo percorre memória → atenção → funções executivas e encerra automaticamente.</p></div><button class="btn" id="fullSessionBtn" type="button">Iniciar circuito</button></div>
+  <div class="science-strip"><div><b>Por que separar os domínios?</b><span>Porque desempenho cognitivo não é uma única habilidade. O app torna essa distinção visível.</span></div><button class="btn ghost" type="button" onclick="openScreen('about')">Ver metodologia →</button></div>
+</section>
+<section class="screen" id="game"> <div class="game"><div class="game-topline"><button class="btn ghost" id="backTrain" type="button">← sair do treino</button><span class="tiny">MODO TREINAMENTO · FEEDBACK EM TEMPO REAL</span></div> <div class="card" style="margin-top:12px"><div class="game-head"><div><span class="tag" id="gameTag"></span><h2 id="gameTitle"></h2><span class="tiny" id="difficulty"></span></div><b id="roundLabel">1/6</b></div><div class="progress"><i id="gameProgress"></i></div><div class="gamebox" id="gameContent"></div></div> </div> </section> <section class="screen" id="test"> <div class="section"> <div><h2>🔬 Bateria cognitiva</h2><span class="muted">tarefas variadas para reduzir repetição</span></div> <span class="tag" id="batteryStatus">PRONTA</span> </div> <div class="card testbox"> <div class="notice"><b>Como funciona:</b> a bateria combina tarefas de memória, atenção, inibição, flexibilidade e busca visual. Cada tarefa possui 4 trials para reduzir o efeito de um único acerto/erro. São paradigmas experimentais inspirados na literatura, não testes psicológicos padronizados ou diagnósticos.</div> <div id="testContent"></div> </div> </section> <section class="screen" id="evolution">
+  <div class="page-hero compact"><div><span class="section-kicker">ANALYTICS</span><h2>Evolução & desempenho</h2><p>Uma visão de produto sobre os dados gerados localmente durante as sessões.</p></div><div class="analytics-badge">LOCAL<br><span>ONLY</span></div></div>
+  <div class="profile-layout"><div class="profile-card"><div class="profile-head"><div><span class="section-kicker">PERFIL</span><h3>Mapa de desempenho</h3></div><span class="live-pill">● atualizado</span></div><div class="profile-row"><div><b>Memória</b><small>retenção e recuperação</small></div><strong id="evMemory">0%</strong><div class="profile-bar"><i id="evBarMemory" style="width:0%"></i></div></div><div class="profile-row"><div><b>Atenção</b><small>seleção e busca</small></div><strong id="evAttention">0%</strong><div class="profile-bar"><i id="evBarAttention" style="width:0%"></i></div></div><div class="profile-row"><div><b>Executivas</b><small>inibição e flexibilidade</small></div><strong id="evExecutive">0%</strong><div class="profile-bar"><i id="evBarExecutive" style="width:0%"></i></div></div></div>
+    <div class="insight-card"><span class="section-kicker">LEITURA</span><div class="insight-icon">◈</div><h3 id="profileInsightTitle">Seu perfil começa aqui</h3><p id="profileInsight">Complete pelo menos um bloco de treino para gerar uma leitura descritiva.</p><div class="insight-line"></div><small>Leitura descritiva do protótipo — não é interpretação clínica.</small></div></div>
+  <div class="evolution-grid"><div class="card activity-card"><div class="card-head"><div><span class="section-kicker">ATIVIDADE</span><h3>Histórico recente</h3></div><span class="tiny">últimos eventos</span></div><div id="activityFeed" class="activity-feed"><div class="empty">Nenhuma sessão registrada ainda.</div></div></div><div class="card transfer-card"><span class="section-kicker">TRANSFERÊNCIA</span><h3>Treino × tarefa diferente</h3><div class="transfer-score" id="transferBig">—</div><p class="muted" id="transferSummary">Faça um treino e depois a bateria cognitiva para registrar uma medida experimental diferente da tarefa treinada.</p><div class="transfer-meter"><i id="transferMeter" style="width:0%"></i></div><small>Precisão global da última bateria</small></div></div>
+  <div class="card methodology-card"><div><span class="section-kicker">COMO LER</span><h3>O que esses números significam?</h3><p>São percentuais de acerto nas tarefas do próprio protótipo. Eles servem para demonstrar <b>medição, feedback e visualização de dados</b>; não devem ser comparados a normas clínicas ou a outras pessoas.</p></div><div class="method-points"><span>01 · Precisão</span><span>02 · Tempo de resposta</span><span>03 · Erros</span></div></div>
+</section>
+<section class="screen" id="research"> <div class="section"><h2>🔬 Modo pesquisa</h2><span class="muted">fluxo experimental demonstrativo</span></div> <div class="research-grid"> <div class="card"><h3>Registrar participante</h3><p class="muted">Os dados ficam apenas neste navegador.</p> <div class="field"><label>ID do participante</label><input autocomplete="off" class="input" id="participantId" maxlength="40" placeholder="Ex.: P023"/></div> <div class="field"><label>Grupo</label><select class="select" id="participantGroup"><option>Treinamento — 20 min</option><option>Controle — recreio habitual</option></select></div> <div class="field"><label>Etapa</label><select class="select" id="participantStage"><option>Pré-teste</option><option>Intervenção</option><option>Pós-teste</option><option>Acompanhamento — 30 dias</option></select></div> <button class="btn full" id="saveParticipant">Registrar</button> </div> <div class="card"><h3>Desenho sugerido</h3><ol class="muted"><li>Pré-teste.</li><li>Intervenção ou condição de comparação.</li><li>Pós-teste com tarefas diferentes.</li><li>Acompanhamento posterior.</li></ol><div class="notice">Este modo simula um protocolo. Ele não executa ensaio clínico e não substitui instrumentos psicológicos validados.</div></div> </div> <div class="card" style="margin-top:14px"><div style="display:flex;justify-content:space-between;align-items:center"><h3 style="margin:0">Registros</h3><button class="btn ghost" id="clearRecords" type="button">Limpar</button></div><div class="table-wrap" id="records"></div></div> </section> <section class="screen" id="about">
+  <div class="page-hero"><div><span class="section-kicker">CONCEITO</span><h2>Por trás do NeuroPlay</h2><p>Uma demonstração de como conceitos de cognição podem virar uma experiência digital mensurável.</p></div><div class="page-hero-mark">COG<br><span>LAB</span></div></div>
+  <div class="about-grid"><article class="about-card"><span>01</span><div class="about-symbol">▦</div><h3>Memória de trabalho</h3><p>Manutenção temporária de informações e recuperação sob demanda.</p><small>Treino: sequência · Bateria: memória espacial</small></article><article class="about-card"><span>02</span><div class="about-symbol">⊙</div><h3>Atenção</h3><p>Seleção de estímulos relevantes diante de múltiplos distratores.</p><small>Treino: busca visual · Bateria: Stroop-like</small></article><article class="about-card"><span>03</span><div class="about-symbol">↯</div><h3>Funções executivas</h3><p>Inibição, flexibilidade cognitiva e mudança de regras.</p><small>Treino: regra variável · Bateria: Go/No-Go + switching</small></article></div>
+  <div class="about-story"><div><span class="section-kicker">A IDEIA CENTRAL</span><h3>Melhorar em uma tarefa não é automaticamente melhorar “o cérebro”.</h3><p>Essa é justamente a pergunta que o protótipo quer tornar visual: quando o usuário pratica uma tarefa, seu desempenho naquela tarefa pode mudar. Para investigar transferência, precisamos observar o que acontece em tarefas diferentes e controlar explicações alternativas.</p></div><div class="story-steps"><div><b>01</b><span>Treinar</span></div><i></i><div><b>02</b><span>Medir</span></div><i></i><div><b>03</b><span>Comparar</span></div></div></div>
+  <div class="notice pro-note"><b>Nota acadêmica:</b> os paradigmas são experimentais/autoriais e inspirados em tarefas cognitivas conhecidas. O NeuroPlay não é instrumento psicológico padronizado, diagnóstico ou teste de QI.</div>
+</section>
+</main> <nav aria-label="Navegação" class="nav"> <button class="active" data-screen="home">⌂ Início</button><button data-screen="train">🧠 Treinar</button><button data-screen="test">🔬 Testar</button><button data-screen="evolution">📊 Evolução</button><button data-screen="research">🧪 Pesquisa</button><button data-screen="about">ℹ️ Sobre</button> </nav> </div> <div class="modal" id="nameModal"><div class="modalbox"><h2>Bem-vindo ao NeuroPlay</h2><p class="muted">Digite um nome para personalizar o protótipo. Pode usar apenas “Aluno”, se preferir.</p><input autocomplete="nickname" class="input" id="nameInput" maxlength="60" placeholder="Seu nome"/><br/><br/><button class="btn full" id="saveName" type="button">Entrar</button></div></div> <div class="toast" id="toast"></div> <script>
+'use strict';
+
+const STORAGE = Object.freeze({
+  name: 'np_name',
+  scores: 'np_scores',
+  records: 'np_records',
+  transfer: 'np_transfer',
+  transferDetails: 'np_transfer_details',
+    activity: 'np_activity'
+});
+
+const DEFAULT_SCORES = Object.freeze({ memory: 0, attention: 0, executive: 0 });
+const GAME_ROUNDS = 6;
+const BATTERY_TRIALS = 4;
+
+const $ = id => document.getElementById(id);
+const screens = ['home', 'train', 'game', 'test', 'evolution', 'research', 'about'];
+
+function storageGet(key) {
+  try { return localStorage.getItem(key); } catch { return null; }
+}
+
+function storageSet(key, value) {
+  try { localStorage.setItem(key, value); return true; } catch { return false; }
+}
+
+function storageRemove(key) {
+  try { localStorage.removeItem(key); } catch {}
+}
+
+function safeParse(raw, fallback) {
+  if (raw == null || raw === '') return fallback;
+  try {
+    const value = JSON.parse(raw);
+    return value ?? fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+function clampPercent(value) {
+  const n = Number(value);
+  return Number.isFinite(n) ? Math.max(0, Math.min(100, Math.round(n))) : 0;
+}
+
+function loadScores() {
+  const parsed = safeParse(storageGet(STORAGE.scores), DEFAULT_SCORES);
+  return Object.fromEntries(Object.keys(DEFAULT_SCORES).map(key => [key, clampPercent(parsed?.[key])]));
+}
+
+function loadRecords() {
+  const parsed = safeParse(storageGet(STORAGE.records), []);
+  return Array.isArray(parsed) ? parsed.filter(Boolean) : [];
+}
+
+function loadTransferDetails() {
+  const parsed = safeParse(storageGet(STORAGE.transferDetails), null);
+  if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return null;
+
+  const score = Number(parsed.score);
+  const avgRt = Number(parsed.avgRt);
+  const errors = Number(parsed.errors);
+
+  return {
+    ...parsed,
+    score: Number.isFinite(score) ? clampPercent(score) : 0,
+    avgRt: Number.isFinite(avgRt) && avgRt >= 0 ? Math.round(avgRt) : 0,
+    errors: Number.isFinite(errors) && errors >= 0 ? Math.round(errors) : 0,
+    tasks: Array.isArray(parsed.tasks) ? parsed.tasks.slice(-100) : []
+  };
+}
+
+const state = {
+  name: storageGet(STORAGE.name) || '',
+  scores: loadScores(),
+  records: loadRecords(),
+  transfer: storageGet(STORAGE.transfer) !== null
+    ? clampPercent(storageGet(STORAGE.transfer))
+    : null,
+  transferDetails: loadTransferDetails(),
+  activity: (() => {
+    const parsed = safeParse(storageGet(STORAGE.activity), []);
+    return Array.isArray(parsed) ? parsed.filter(item => item && typeof item === 'object').slice(-40) : [];
+  })(),
+  battery: createBatteryState(),
+  game: createGameState(),
+  session: { active: false, started: 0, interval: null }
+};
+
+function createBatteryState() {
+  return {
+    active: false,
+    index: 0,
+    total: 5,
+    taskTrial: 0,
+    taskTrials: BATTERY_TRIALS,
+    correct: 0,
+    trials: 0,
+    rt: [],
+    errors: 0,
+    current: null,
+    currentRule: null,
+    results: [],
+    generation: 0,
+    trialLocked: false
+  };
+}
+
+function createGameState() {
+  return {
+    type: null,
+    round: 0,
+    correct: 0,
+    active: false,
+    full: false,
+    locked: false,
+    phase: 'idle',
+    generation: 0
+  };
+}
+
+function logActivity(type, label, score, detail = '') {
+  if (!Array.isArray(state.activity)) state.activity = [];
+  state.activity.push({ type, label, score: clampPercent(score), detail, time: Date.now() });
+  if (state.activity.length > 40) state.activity = state.activity.slice(-40);
+}
+
+function save() {
+  const results = [
+    storageSet(STORAGE.scores, JSON.stringify(state.scores)),
+    storageSet(STORAGE.records, JSON.stringify(state.records)),
+    storageSet(STORAGE.activity, JSON.stringify(Array.isArray(state.activity) ? state.activity.slice(-40) : []))
+  ];
+
+  if (results.some(saved => !saved)) {
+    toast('Não foi possível salvar todos os dados neste navegador.');
+    return false;
+  }
+
+  return true;
+}
+
+function saveTransfer(accuracy, details) {
+  const saved = [
+    storageSet(STORAGE.transfer, String(clampPercent(accuracy))),
+    storageSet(STORAGE.transferDetails, JSON.stringify(details))
+  ];
+
+  if (saved.some(value => !value)) {
+    toast('Resultado calculado, mas não foi possível salvá-lo.');
+    return false;
+  }
+
+  return true;
+}
+
+function toast(msg) {
+  $('toast').textContent = msg;
+  $('toast').style.display = 'block';
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(() => {
+    $('toast').style.display = 'none';
+  }, 2200);
+}
+
+function setUser() {
+  const name = state.name.trim();
+  $('userName').textContent = name || 'Participante';
+  $('avatar').textContent = name[0]?.toUpperCase() || 'P';
+}
+
+function cancelGame(invalidate = true) {
+  state.game.active = false;
+  state.game.locked = true;
+  if (invalidate) state.game.generation++;
+  clearTimeout(window._gameTimer); window._gameTimer = null;
+}
+
+function cancelBattery() {
+  state.battery.active = false;
+  state.battery.trialLocked = true;
+  state.battery.generation++;
+  clearTimeout(window._batteryTimer);
+  window._batteryTimer = null;
+  if (state.battery.current?.noGoTimer) {
+    clearTimeout(state.battery.current.noGoTimer);
+    state.battery.current.noGoTimer = null;
+  }
+}
+
+function openScreen(id) {
+  if (!screens.includes(id)) return;
+
+  if (id !== 'game' && state.game.active) {
+    cancelGame();
+    if (state.session.active) endSession();
+  }
+
+  if (id !== 'test' && state.battery.active) {
+    cancelBattery();
+    $('batteryStatus').textContent = 'PAUSADA';
+  }
+
+  document.querySelectorAll('.screen').forEach(screen => screen.classList.remove('active'));
+  $(id).classList.add('active');
+
+  document.querySelectorAll('.nav button').forEach(button => {
+    button.classList.toggle('active', button.dataset.screen === id);
+  });
+
+  if (id === 'test') renderTest();
+  if (id === 'evolution') renderEvolution();
+  if (id === 'research') renderRecords();
+
+  const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+  window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
+}
+
+document.querySelectorAll('.nav button').forEach(button => {
+  button.addEventListener('click', () => openScreen(button.dataset.screen));
+});
+
+document.querySelectorAll('.train').forEach(card => {
+  card.addEventListener('click', () => startGame(card.dataset.game));
+});
+
+$('heroStart').addEventListener('click', startFullSession);
+$('fullSessionBtn').addEventListener('click', startFullSession);
+
+$('backTrain').addEventListener('click', () => {
+  const wasSession = state.session.active;
+  cancelGame();
+  if (wasSession) endSession();
+  openScreen('train');
+  toast(wasSession ? 'Sessão encerrada' : 'Treino encerrado');
+});
+
+function startFullSession() {
+  cancelGame();
+  if (state.battery.active) cancelBattery();
+  endSession();
+  state.session.active = true;
+  state.session.started = Date.now();
+
+  clearInterval(state.session.interval);
+  state.session.interval = setInterval(updateTimer, 1000);
+
+  updateTimer();
+  toast('Sessão de 20 minutos iniciada');
+  startGame('memory', true);
+}
+
+function updateTimer() {
+  if (!state.session.active) return;
+
+  const elapsed = Math.floor((Date.now() - state.session.started) / 1000);
+  const left = Math.max(0, 1200 - elapsed);
+
+  $('sessionTimer').textContent =
+    String(Math.floor(left / 60)).padStart(2, '0') +
+    ':' +
+    String(left % 60).padStart(2, '0');
+
+  if (left <= 0) {
+    endSession();
+    cancelGame();
+    toast('Tempo da sessão encerrado');
+  }
+}
+
+function endSession() {
+  state.session.active = false;
+  clearInterval(state.session.interval);
+  state.session.interval = null;
+}
+
+const meta = Object.freeze({
+  memory: {
+    tag: 'MEMÓRIA',
+    title: 'Memória de trabalho',
+    difficulty: 'A sequência aumenta a cada rodada.'
+  },
+  attention: {
+    tag: 'ATENÇÃO',
+    title: 'Atenção seletiva',
+    difficulty: 'Mais distratores a cada rodada.'
+  },
+  executive: {
+    tag: 'EXECUTIVAS',
+    title: 'Funções executivas',
+    difficulty: 'A regra muda nas rodadas finais.'
+  }
+});
+
+function startGame(type, full = false) {
+  if (!meta[type]) return;
+
+  cancelGame();
+  state.game = {
+    type,
+    round: 0,
+    correct: 0,
+    active: true,
+    full,
+    locked: false,
+    phase: 'intro',
+    generation: state.game.generation + 1
+  };
+
+  openScreen('game');
+  renderGameIntro(state.game.generation);
+}
+
+function renderGameIntro(generation) {
+  if (!state.game.active || generation !== state.game.generation) return;
+  const info = meta[state.game.type];
+  const guide = {
+    memory: ['Observe a sequência', 'Ela desaparece', 'Recupere a posição solicitada'],
+    attention: ['Veja o alvo', 'Ignore os distratores', 'Clique apenas no alvo'],
+    executive: ['Leia a regra', 'Observe o estímulo', 'Toque ou iniba a resposta']
+  }[state.game.type];
+  $('gameProgress').style.width = '0%';
+  $('roundLabel').textContent = 'READY';
+  $('gameTag').textContent = info.tag;
+  $('gameTitle').textContent = info.title;
+  $('difficulty').textContent = info.difficulty;
+  $('gameContent').innerHTML = `<div class="game-intro"><span class="section-kicker">PREPARAÇÃO · ${info.tag}</span><div class="game-intro-symbol">${state.game.type === 'memory' ? '▦' : state.game.type === 'attention' ? '⊙' : '↯'}</div><h2>Antes de começar</h2><p>${info.difficulty}</p><div class="instruction-steps">${guide.map((item,i)=>`<div><b>0${i+1}</b><span>${item}</span></div>`).join('')}</div><button class="btn" id="beginGameRound">Estou pronto →</button></div>`;
+  $('beginGameRound').addEventListener('click', () => {
+    if (!state.game.active || generation !== state.game.generation) return;
+    state.game.phase = 'running';
+    nextRound(generation);
+  });
+}
+
+function nextRound(generation = state.game.generation) {
+  if (!state.game.active || generation !== state.game.generation) return;
+
+  state.game.round++;
+
+  if (state.game.round > GAME_ROUNDS) {
+    finishGame(generation);
+    return;
+  }
+
+  state.game.locked = false;
+  const game = state.game;
+  const info = meta[game.type];
+
+  $('gameTag').textContent = info.tag;
+  $('gameTitle').textContent = info.title;
+  $('difficulty').textContent = info.difficulty;
+  $('roundLabel').textContent = `${game.round}/${GAME_ROUNDS}`;
+  $('gameProgress').style.width = `${((game.round - 1) / GAME_ROUNDS) * 100}%`;
+
+  if (game.type === 'memory') renderMemory(generation);
+  else if (game.type === 'attention') renderAttention();
+  else renderExecutive();
+}
+
+function answer(correct, generation = state.game.generation) {
+  if (!state.game.active || state.game.locked || generation !== state.game.generation) return;
+
+  state.game.locked = true;
+  if (correct) state.game.correct++;
+
+  clearTimeout(window._gameTimer);
+  window._gameTimer = setTimeout(() => {
+    nextRound(generation);
+  }, 280);
+}
+
+function renderMemory(generation) {
+  const level = state.game.round;
+  const length = Math.min(9, 3 + Math.floor((level - 1) * 0.9));
+  const sequence = Array.from({ length }, () => Math.floor(Math.random() * 10));
+  const probeIndex = Math.floor(Math.random() * sequence.length);
+  const correct = sequence[probeIndex];
+
+  state.game.seq = sequence;
+  state.game.memoryProbe = { index: probeIndex, value: correct };
+
+  $('gameContent').innerHTML =
+    `<div>
+      <div class="task-kicker">Memória de trabalho · rodada ${level}</div>
+      <div class="sequence" aria-label="Sequência para memorizar">${sequence.join(' ')}</div>
+      <p class="muted">Memorize a sequência. Ela desaparecerá em instantes.</p>
+      <div class="trial-note">A posição perguntada varia a cada rodada — não é sempre o último número.</div>
+    </div>`;
+
+  clearTimeout(window._gameTimer); window._gameTimer = null;
+  const displayTime = 1050 + level * 150;
+  window._gameTimer = setTimeout(() => {
+    if (!state.game.active || generation !== state.game.generation) return;
+
+    const options = new Set([correct]);
+    while (options.size < Math.min(8, 4 + Math.floor(level / 2))) {
+      options.add(Math.floor(Math.random() * 10));
+    }
+
+    const shuffled = shuffle([...options]);
+    const position = probeIndex + 1;
+
+    $('gameContent').innerHTML =
+      `<div>
+        <div><b>Qual número estava na posição ${position}?</b></div>
+        <p class="muted">A sequência tinha ${length} posições.</p>
+        <div class="answers" style="margin-top:24px">
+          ${shuffled.map(number =>
+            `<button type="button" class="choice" data-answer="${number === correct}">${number}</button>`
+          ).join('')}
+        </div>
+      </div>`;
+
+    $('gameContent').querySelectorAll('[data-answer]').forEach(button => {
+      button.addEventListener('click', () => answer(button.dataset.answer === 'true', generation));
+    });
+  }, displayTime);
+}
+
+function renderAttention() {
+  const level = state.game.round;
+  const count = 8 + level * 2;
+  const shapes = ['★', '○', '△', '□', '◇', '●', '◆'];
+  const target = shapes[Math.floor(Math.random() * shapes.length)];
+  const distractors = shapes.filter(shape => shape !== target);
+  const targetIndex = Math.floor(Math.random() * count);
+  const items = Array.from({ length: count }, () =>
+    distractors[Math.floor(Math.random() * distractors.length)]
+  );
+  items[targetIndex] = target;
+
+  $('gameContent').innerHTML =
+    `<div>
+      <div class="task-kicker">Atenção seletiva · alvo variável</div>
+      <p class="muted">Encontre somente o símbolo indicado abaixo.</p>
+      <div class="target-preview" aria-label="Alvo">${target}</div>
+      <div class="answers choice-grid" style="margin-top:12px">
+        ${items.map((shape, index) =>
+          `<button type="button" class="choice" aria-label="Estímulo ${index + 1}" data-answer="${index === targetIndex}">${shape}</button>`
+        ).join('')}
+      </div>
+      <div class="trial-note">Há exatamente um alvo. A posição e o símbolo mudam a cada rodada.</div>
+    </div>`;
+
+  $('gameContent').querySelectorAll('[data-answer]').forEach(button => {
+    button.addEventListener('click', () => answer(button.dataset.answer === 'true'));
+  });
+}
+
+function renderExecutive() {
+  const level = state.game.round;
+  const rules = ['COR', 'FORMA'];
+  const rule = level <= 2 ? 'COR' : (level <= 4 ? 'FORMA' : (Math.random() < 0.5 ? 'COR' : 'FORMA'));
+  const colors = [
+    { label: 'AZUL', token: 'blue', hex: '#4f72e8' },
+    { label: 'VERMELHO', token: 'red', hex: '#d95368' }
+  ];
+  const shapes = ['●', '■'];
+  const color = rule === 'COR'
+    ? colors[(level - 1) % colors.length]
+    : colors[Math.floor(Math.random() * colors.length)];
+  const shape = rule === 'FORMA'
+    ? shapes[(level - 3) % shapes.length]
+    : shapes[Math.floor(Math.random() * shapes.length)];
+  const target = rule === 'COR' ? color.token === 'blue' : shape === '●';
+
+  $('gameContent').innerHTML =
+    `<div>
+      <div class="task-kicker">Controle executivo · regra variável</div>
+      <p class="muted">Regra atual: <b>${rule === 'COR' ? 'toque quando a cor for AZUL' : 'toque quando a forma for CÍRCULO'}</b>.</p>
+      <div class="target-preview" style="color:${color.token === 'blue' ? '#4f72e8' : '#d95368'}">${shape}</div>
+      <div class="game-actions">
+        <button type="button" class="btn response-pad" id="touch">TOCAR</button>
+        <button type="button" class="btn secondary response-pad" id="dont">NÃO TOCAR</button>
+      </div>
+      <div class="trial-note">A regra pode mudar. Leia a regra antes de responder.</div>
+    </div>`;
+
+  $('touch').addEventListener('click', () => answer(target));
+  $('dont').addEventListener('click', () => answer(!target));
+}
+
+function finishGame(generation) {
+  if (generation !== state.game.generation) return;
+
+  const game = state.game;
+  const percent = Math.round((game.correct / GAME_ROUNDS) * 100);
+
+  game.active = false;
+  game.locked = true;
+
+  state.scores[game.type] = Math.max(state.scores[game.type], percent);
+  logActivity('training', meta[game.type].title, percent, `${game.correct}/${GAME_ROUNDS} acertos`);
+  save();
+  renderDashboard();
+
+  $('gameProgress').style.width = '100%';
+  $('gameContent').innerHTML =
+    `<div class="result premium-result">
+      <span class="tag">BLOCO CONCLUÍDO · ${meta[game.type].tag}</span>
+      <div class="result-orbit"><div class="score">${percent}%</div><span>PRECISÃO</span></div>
+      <h2>${game.correct} de ${GAME_ROUNDS} acertos</h2>
+      <p class="muted">Desempenho nesta tarefa específica. O melhor resultado local foi atualizado no painel.</p>
+      <div class="result-grid"><div><b>${game.correct}</b><small>acertos</small></div><div><b>${GAME_ROUNDS-game.correct}</b><small>erros</small></div><div><b>${state.scores[game.type]}%</b><small>melhor local</small></div></div>
+      <div class="game-actions"><button class="btn" id="goTransfer">Testar transferência →</button><button class="btn secondary" id="anotherGame">Outro treino</button></div>
+    </div>`;
+
+  $('goTransfer').addEventListener('click', () => openScreen('test'));
+  $('anotherGame').addEventListener('click', () => openScreen('train'));
+
+  if (!game.full || !state.session.active) return;
+
+  const nextType = game.type === 'memory'
+    ? 'attention'
+    : game.type === 'attention'
+      ? 'executive'
+      : null;
+
+  if (nextType) {
+    clearTimeout(window._gameTimer); window._gameTimer = null;
+    window._gameTimer = setTimeout(() => {
+      if (state.session.active) {
+        toast(`${meta[game.type].title} concluído. Próximo bloco: ${meta[nextType].title.toLowerCase()}`);
+        startGame(nextType, true);
+      }
+    }, 400);
+  } else {
+    endSession();
+    toast('Sessão completa concluída!');
+  }
+}
+
+function renderDashboard() {
+  const map = {
+    memory: 'Memory',
+    attention: 'Attention',
+    executive: 'Executive'
+  };
+
+  Object.keys(map).forEach(key => {
+    const value = clampPercent(state.scores[key]);
+
+    $(`home${map[key]}`).textContent = `${value}%`;
+    $(`bar${map[key]}`).style.width = `${value}%`;
+    $(`ev${map[key]}`).textContent = `${value}%`;
+    $(`evBar${map[key]}`).style.width = `${value}%`;
+  });
+}
+
+function renderEvolution() {
+  renderDashboard();
+  const values = [state.scores.memory, state.scores.attention, state.scores.executive].map(Number);
+  const max = Math.max(...values, 0);
+  const active = values.filter(v => v > 0).length;
+  const insightTitle = $('profileInsightTitle');
+  const insight = $('profileInsight');
+  if (active === 0) {
+    insightTitle.textContent = 'Seu perfil começa aqui';
+    insight.textContent = 'Complete um bloco de treino para gerar uma leitura descritiva do desempenho registrado.';
+  } else {
+    const names = ['memória', 'atenção', 'funções executivas'];
+    const idx = values.indexOf(max);
+    insightTitle.textContent = `${names[idx]} em destaque`;
+    insight.textContent = `Entre os blocos realizados, ${names[idx]} apresenta o maior percentual registrado (${max}%). Isso descreve apenas o desempenho observado nesta tarefa.`;
+  }
+  const transfer = state.transfer;
+  $('transferSummary').innerHTML = transfer === null
+    ? 'Faça um treino e depois a bateria cognitiva para registrar uma medida experimental diferente da tarefa treinada.'
+    : `Última bateria: <b>${clampPercent(transfer)}%</b> de precisão` + (state.transferDetails?.avgRt ? ` · ${state.transferDetails.avgRt} ms de tempo médio` : '') + `. O resultado é experimental e não prova transferência ou aumento de inteligência.`;
+  if ($('transferBig')) $('transferBig').textContent = transfer === null ? '—' : `${clampPercent(transfer)}%`;
+  if ($('transferMeter')) $('transferMeter').style.width = `${clampPercent(transfer || 0)}%`;
+  const feed = $('activityFeed');
+  if (feed) {
+    const items = Array.isArray(state.activity) ? state.activity.slice(-8).reverse() : [];
+    feed.innerHTML = items.length ? items.map(item => `<div class="activity-item"><span class="activity-dot"></span><div><b>${escapeHtml(item.label)}</b><small>${escapeHtml(item.detail || 'atividade concluída')}</small></div><strong>${clampPercent(item.score)}%</strong></div>`).join('') : '<div class="empty">Nenhuma sessão registrada ainda.</div>';
+  }
+}
+
+/* Bateria experimental autoral inspirada em paradigmas de Stroop, Go/No-Go,
+   task switching, busca visual e memória espacial. Não é instrumento normatizado. */
+
+const batteryTasks = [
+  {
+    id: 'stroop',
+    title: 'Interferência de cores',
+    domain: 'Atenção + inibição',
+    desc: 'Ignore a palavra e responda à cor.',
+    tag: 'STROOP-LIKE'
+  },
+  {
+    id: 'gonogo',
+    title: 'Controle de resposta',
+    domain: 'Inibição',
+    desc: 'Responda aos alvos e segure a resposta aos sinais de parada.',
+    tag: 'GO / NO-GO'
+  },
+  {
+    id: 'switch',
+    title: 'Troca de regra',
+    domain: 'Flexibilidade',
+    desc: 'Alterne entre duas regras de classificação.',
+    tag: 'TASK SWITCHING'
+  },
+  {
+    id: 'search',
+    title: 'Busca visual',
+    domain: 'Atenção seletiva',
+    desc: 'Localize um alvo entre distratores.',
+    tag: 'VISUAL SEARCH'
+  },
+  {
+    id: 'spatial',
+    title: 'Memória espacial',
+    domain: 'Memória de trabalho',
+    desc: 'Lembre a ordem de posições.',
+    tag: 'SPATIAL MEMORY'
+  }
+];
+
+const batteryColors = [
+  { name: 'VERMELHO', hex: '#e05263', key: 'red' },
+  { name: 'AZUL', hex: '#4f72e8', key: 'blue' },
+  { name: 'VERDE', hex: '#159a70', key: 'green' },
+  { name: 'AMARELO', hex: '#d59a18', key: 'yellow' }
+];
+
+function shuffle(items) {
+  for (let index = items.length - 1; index > 0; index--) {
+    const randomIndex = Math.floor(Math.random() * (index + 1));
+    [items[index], items[randomIndex]] = [items[randomIndex], items[index]];
+  }
+  return items;
+}
+
+function resetBattery() {
+  state.battery = {
+    ...createBatteryState(),
+    generation: state.battery.generation + 1
+  };
+  clearTimeout(window._batteryTimer);
+}
+
+function batteryIntro() {
+  const container = $('testContent');
+  container.innerHTML =
+    `<div class="battery-welcome">
+      <div class="battery-welcome-main">
+        <span class="section-kicker">COGNITIVE BATTERY · 05 MÓDULOS</span>
+        <h2>Uma avaliação experimental, não um quiz.</h2>
+        <p>Você passará por cinco tarefas diferentes. Algumas pedem resposta rápida; outras exigem que você segure uma resposta ou mude de regra.</p>
+        <div class="battery-facts"><span><b>20</b> trials</span><span><b>5</b> paradigmas</span><span><b>≈ 4–6</b> min</span></div>
+      </div>
+      <div class="battery-readiness"><div class="readiness-ring"><span>READY</span></div><small>Responda em ritmo natural.</small></div>
+    </div>
+    <div class="battery-timeline">
+      ${batteryTasks.map((task, index) => `<div class="battery-step"><span>${String(index+1).padStart(2,'0')}</span><div><b>${task.title}</b><small>${task.domain}</small></div></div>`).join('')}
+    </div>
+    <div class="protocol-box"><div class="protocol-icon">!</div><div><b>Antes de começar</b><p>Leia cada regra com atenção. Não tente “decorar” padrões entre tarefas: o estímulo e a posição são randomizados.</p></div></div>
+    <div class="game-actions" style="margin-top:20px"><button class="btn" id="startBattery">Iniciar bateria →</button></div>`;
+  $('startBattery').addEventListener('click', batteryStart);
+}
+
+function batteryStart() {
+  if (state.battery.current?.noGoTimer) clearTimeout(state.battery.current.noGoTimer);
+  resetBattery();
+  state.battery.currentRule = null;
+  state.battery.active = true;
+  state.battery.current = null;
+  $('batteryStatus').textContent = 'EM ANDAMENTO';
+  renderBatteryTask(state.battery.generation);
+}
+
+function updateBatteryProgress() {
+  const bar = $('batteryProgress');
+  if (!bar) return;
+
+  const totalTrials = state.battery.total * state.battery.taskTrials;
+  const completedTrials = state.battery.index * state.battery.taskTrials + state.battery.taskTrial;
+  const progress = totalTrials > 0 ? Math.round((completedTrials / totalTrials) * 100) : 0;
+  bar.style.width = `${Math.max(0, Math.min(100, progress))}%`;
+}
+
+function batteryButton(label, correct, extra = {}) {
+  const button = document.createElement('button');
+  button.className = 'btn battery-choice';
+  button.type = 'button';
+  button.textContent = label;
+
+  button.addEventListener('click', () => {
+    if (
+      button.disabled ||
+      !state.battery.active ||
+      state.battery.trialLocked
+    ) return;
+
+    document.querySelectorAll('.battery-choice').forEach(item => {
+      item.disabled = true;
+    });
+
+    const started = state.battery.current?.started;
+    const rt = Number.isFinite(started) ? performance.now() - started : NaN;
+
+    batteryTrialDone(correct, rt, extra);
+  });
+
+  return button;
+}
+
+function batteryTrialDone(correct, rt, extra = {}) {
+  const battery = state.battery;
+
+  if (!battery.active || battery.trialLocked || !battery.current) return;
+
+  battery.trialLocked = true;
+  if (battery.current.noGoTimer) {
+    clearTimeout(battery.current.noGoTimer);
+    battery.current.noGoTimer = null;
+  }
+  battery.trials++;
+
+  if (correct) battery.correct++;
+  else battery.errors++;
+
+  if (Number.isFinite(rt) && rt > 0) battery.rt.push(rt);
+
+  battery.results.push({
+    task: battery.current.id,
+    trial: battery.taskTrial + 1,
+    correct: Boolean(correct),
+    rt: Number.isFinite(rt) ? Math.round(rt) : null,
+    ...extra
+  });
+
+  const generation = battery.generation;
+
+  clearTimeout(window._batteryTimer);
+  window._batteryTimer = setTimeout(() => {
+    if (!battery.active || generation !== state.battery.generation) return;
+
+    battery.taskTrial++;
+
+    if (battery.taskTrial >= battery.taskTrials) {
+      battery.taskTrial = 0;
+      battery.index++;
+    }
+
+    if (battery.index >= battery.total) {
+      finishBattery(generation);
+    } else {
+      battery.trialLocked = false;
+      renderBatteryTask(generation);
+    }
+  }, 260);
+}
+
+function renderBatteryTask(generation = state.battery.generation) {
+  const battery = state.battery;
+
+  if (!battery.active || generation !== battery.generation) return;
+
+  const taskDefinition = batteryTasks[battery.index];
+  if (!taskDefinition) {
+    finishBattery(generation);
+    return;
+  }
+
+  battery.trialLocked = false;
+  if (battery.current?.noGoTimer) clearTimeout(battery.current.noGoTimer);
+  battery.current = {
+    id: taskDefinition.id,
+    started: performance.now(),
+    noGoTimer: null
+  };
+
+  updateBatteryProgress();
+
+  const container = $('testContent');
+
+  container.innerHTML =
+    `<div class="game-head">
+      <div>
+        <span class="tag">${taskDefinition.tag}</span>
+        <h2 style="margin:8px 0 4px">${taskDefinition.title}</h2>
+        <span class="tiny">${taskDefinition.domain}</span>
+      </div>
+      <b>${battery.index + 1}/${battery.total}</b>
+    </div>
+    <div class="progress">
+      <i style="width:${Math.round(((battery.index * battery.taskTrials + battery.taskTrial) / (battery.total * battery.taskTrials)) * 100)}%"></i>
+    </div>
+    <div id="batteryTaskContent" class="gamebox"></div>`;
+
+  const task = $('batteryTaskContent');
+
+  if (taskDefinition.id === 'stroop') renderBatteryStroop(task);
+  else if (taskDefinition.id === 'gonogo') renderBatteryGoNoGo(task);
+  else if (taskDefinition.id === 'switch') renderBatterySwitch(task);
+  else if (taskDefinition.id === 'search') renderBatterySearch(task);
+  else if (taskDefinition.id === 'spatial') renderBatterySpatial(task, generation);
+}
+
+function renderBatteryStroop(container) {
+  const ink = batteryColors[Math.floor(Math.random() * batteryColors.length)];
+  const word = batteryColors[Math.floor(Math.random() * batteryColors.length)];
+  const congruent = ink.key === word.key;
+
+  state.battery.current.expected = ink.key;
+
+  container.innerHTML =
+    `<div>
+      <p class="muted">Qual é a <b>cor da tinta</b>? Ignore a palavra.</p>
+      <div class="stroop-word" style="color:${ink.hex}">${word.name}</div>
+      <div class="answers" id="batteryAnswers"></div>
+      <div class="rt-note">${congruent ? 'Condição congruente' : 'Condição incongruente'}</div>
+    </div>`;
+
+  const wrapper = $('batteryAnswers');
+  batteryColors.forEach(color => {
+    wrapper.appendChild(
+      batteryButton(
+        color.name,
+        color.key === ink.key,
+        { condition: congruent ? 'congruent' : 'incongruent' }
+      )
+    );
+  });
+}
+
+function renderBatteryGoNoGo(container) {
+  const go = Math.random() < 0.72;
+  const symbol = go ? '●' : '■';
+  const trialStart = performance.now();
+  state.battery.current.go = go;
+  state.battery.current.started = trialStart;
+
+  container.innerHTML =
+    `<div class="no-go-stage">
+      <div>
+        <div class="stimulus" aria-label="Estímulo">${symbol}</div>
+        <p class="muted">Se for <b>●</b>, pressione RESPONDER. Se for <b>■</b>, não pressione nada.</p>
+        <button type="button" class="btn response-pad" id="goRespond">RESPONDER</button>
+        <div class="rt-live">Responda rapidamente sem sacrificar a precisão.</div>
+      </div>
+    </div>`;
+
+  const respond = $('goRespond');
+  respond.addEventListener('click', () => {
+    if (!state.battery.active || state.battery.trialLocked) return;
+    const rt = performance.now() - trialStart;
+    batteryTrialDone(go, go ? rt : null, { type: go ? 'go' : 'no-go' });
+  });
+
+  if (!go) {
+    state.battery.current.noGoTimer = setTimeout(() => {
+      if (!state.battery.active || state.battery.trialLocked) return;
+      batteryTrialDone(true, null, { type: 'no-go', withheld: true });
+    }, 1200);
+  }
+}
+
+function renderBatterySwitch(container) {
+  const previous = state.battery.currentRule || null;
+  const rule = previous === 'COR' ? 'FORMA' : 'COR';
+  state.battery.currentRule = rule;
+
+  const color = Math.random() < 0.5
+    ? { label: 'AZUL', hex: '#4f72e8', key: 'blue' }
+    : { label: 'VERMELHO', hex: '#d95368', key: 'red' };
+  const shape = Math.random() < 0.5 ? '●' : '■';
+  const correct = rule === 'COR' ? color.key === 'blue' : shape === '●';
+
+  state.battery.current.expected = correct;
+
+  container.innerHTML =
+    `<div>
+      <div class="task-kicker">Regra ${rule === 'COR' ? 'de cor' : 'de forma'}</div>
+      <p class="muted">Responda <b>SIM</b> se o estímulo satisfaz a regra atual.</p>
+      <div class="target-preview" style="color:${color.hex}">${shape}</div>
+      <p class="trial-note">Regra: <b>${rule === 'COR' ? 'a cor é AZUL' : 'a forma é CÍRCULO'}</b>. A regra alterna entre os trials.</p>
+      <div class="answers" id="switchAnswers" style="margin-top:16px"></div>
+    </div>`;
+
+  const wrapper = $('switchAnswers');
+  wrapper.appendChild(batteryButton('SIM', correct, { rule }));
+  wrapper.appendChild(batteryButton('NÃO', !correct, { rule }));
+}
+
+function renderBatterySearch(container) {
+  const shapes = ['◆', '●', '▲', '■'];
+  const target = shapes[Math.floor(Math.random() * shapes.length)];
+  const count = 12 + Math.floor(Math.random() * 5);
+  const targetIndex = Math.floor(Math.random() * count);
+  const distractors = shapes.filter(shape => shape !== target);
+  const items = Array.from({ length: count }, () =>
+    distractors[Math.floor(Math.random() * distractors.length)]
+  );
+  items[targetIndex] = target;
+
+  container.innerHTML =
+    `<div>
+      <p class="muted">Localize o alvo <b>${target}</b> e toque nele.</p>
+      <div class="target-preview" style="min-width:82px;min-height:82px;font-size:42px">${target}</div>
+      <div class="answers choice-grid" id="searchAnswers"></div>
+      <div class="trial-note">${count} estímulos · apenas um alvo · posição aleatória.</div>
+    </div>`;
+
+  const wrapper = $('searchAnswers');
+  items.forEach((item, index) => {
+    const button = batteryButton(item, index === targetIndex, { setSize: count });
+    button.style.minWidth = '64px';
+    wrapper.appendChild(button);
+  });
+}
+
+function renderBatterySpatial(container, generation) {
+  const cells = 9;
+  const sequence = [];
+
+  while (sequence.length < 3) {
+    const index = Math.floor(Math.random() * cells);
+    if (!sequence.includes(index)) sequence.push(index);
+  }
+
+  state.battery.current.sequence = sequence;
+
+  container.innerHTML =
+    `<div>
+      <p class="muted">Memorize a ordem dos quadrados destacados.</p>
+      <div id="spatialBoard" class="grid-board"></div>
+      <p class="rt-note">A sequência desaparece automaticamente.</p>
+    </div>`;
+
+  const board = $('spatialBoard');
+
+  for (let index = 0; index < cells; index++) {
+    const button = document.createElement('button');
+    button.className = 'grid-cell';
+    button.type = 'button';
+    board.appendChild(button);
+  }
+
+  sequence.forEach((cellIndex, order) => {
+    setTimeout(() => {
+      if (!state.battery.active || generation !== state.battery.generation) return;
+
+      const cell = board.children[cellIndex];
+      if (!cell) return;
+
+      cell.classList.add('active');
+      cell.textContent = String(order + 1);
+
+      setTimeout(() => {
+        if (!cell) return;
+        cell.classList.remove('active');
+        cell.textContent = '';
+      }, 260);
+    }, order * 430);
+  });
+
+  clearTimeout(window._batteryTimer);
+  window._batteryTimer = setTimeout(() => {
+    if (!state.battery.active || generation !== state.battery.generation) return;
+
+    container.innerHTML =
+      `<div>
+        <p class="muted">Agora toque na <b>ordem correta</b>.</p>
+        <div id="spatialAnswer" class="grid-board"></div>
+        <p class="rt-note">Comece pelo 1 e siga até o 3.</p>
+      </div>`;
+
+    const answerBoard = $('spatialAnswer');
+    const picked = [];
+    const spatialStarted = performance.now();
+    let locked = false;
+
+    for (let index = 0; index < cells; index++) {
+      const button = document.createElement('button');
+      button.className = 'grid-cell';
+      button.type = 'button';
+
+      button.addEventListener('click', () => {
+        if (
+          locked ||
+          !state.battery.active ||
+          generation !== state.battery.generation
+        ) return;
+
+        const expected = sequence[picked.length];
+
+        if (index === expected) {
+          picked.push(index);
+          button.classList.add('active');
+          button.textContent = String(picked.length);
+          button.disabled = true;
+
+          if (picked.length === sequence.length) {
+            locked = true;
+            batteryTrialDone(
+              true,
+              performance.now() - spatialStarted,
+              { sequenceLength: sequence.length }
+            );
+          }
+        } else {
+          locked = true;
+          button.classList.add('target');
+          batteryTrialDone(
+            false,
+            performance.now() - spatialStarted,
+            { sequenceLength: sequence.length }
+          );
+        }
+      });
+
+      answerBoard.appendChild(button);
+    }
+  }, sequence.length * 430 + 450);
+}
+
+function finishBattery(generation) {
+  const battery = state.battery;
+  if (!battery.active || generation !== battery.generation) return;
+
+  battery.active = false;
+
+  const accuracy = Math.round(
+    (battery.correct / Math.max(1, battery.trials)) * 100
+  );
+
+  clearTimeout(window._batteryTimer);
+  window._batteryTimer = null;
+  if (battery.current?.noGoTimer) {
+    clearTimeout(battery.current.noGoTimer);
+    battery.current.noGoTimer = null;
+  }
+
+  const avgRt = battery.rt.length
+    ? Math.round(battery.rt.reduce((sum, value) => sum + value, 0) / battery.rt.length)
+    : 0;
+
+  const details = {
+    score: accuracy,
+    avgRt,
+    errors: battery.errors,
+    tasks: battery.results,
+    time: Date.now()
+  };
+
+  battery.final = { accuracy, avgRt, errors: battery.errors };
+  logActivity('battery', 'Bateria cognitiva', accuracy, `${battery.correct}/${battery.trials} acertos · ${avgRt || '—'} ms`);
+  state.transfer = accuracy;
+  state.transferDetails = details;
+  saveTransfer(accuracy, details);
+
+  $('batteryStatus').textContent = 'CONCLUÍDA';
+
+  $('testContent').innerHTML =
+    `<div class="result">
+      <span class="tag">BATERIA CONCLUÍDA</span>
+      <div class="score">${accuracy}%</div>
+      <h2>${battery.correct} de ${battery.trials} respostas corretas</h2>
+      <div class="battery-result">
+        <div class="metric-card"><strong>${accuracy}%</strong><span>precisão</span></div>
+        <div class="metric-card"><strong>${avgRt ? `${avgRt} ms` : '—'}</strong><span>tempo médio</span></div>
+        <div class="metric-card"><strong>${battery.errors}</strong><span>erros</span></div>
+      </div>
+      <p class="muted">O resultado descreve o desempenho nesta bateria experimental. Não é diagnóstico, QI ou medida clínica.</p>
+      <div class="game-actions">
+        <button class="btn" id="seeEvolution">Ver evolução</button>
+        <button class="btn secondary" id="redoBattery">Refazer bateria</button>
+      </div>
+    </div>`;
+
+  $('seeEvolution').addEventListener('click', () => openScreen('evolution'));
+  $('redoBattery').addEventListener('click', restartBattery);
+
+  renderEvolution();
+}
+
+function restartBattery() {
+  try {
+    storageRemove(STORAGE.transfer);
+    storageRemove(STORAGE.transferDetails);
+  } catch {
+    // O estado em memória ainda será reiniciado.
+  }
+
+  state.transfer = null;
+  state.transferDetails = null;
+  resetBattery();
+
+  $('batteryStatus').textContent = 'PRONTA';
+  batteryIntro();
+}
+
+function renderTest() {
+  if (state.battery.active) {
+    renderBatteryTask(state.battery.generation);
+    return;
+  }
+
+  if (state.transfer === null || !state.transferDetails) {
+    $('batteryStatus').textContent = 'PRONTA';
+    batteryIntro();
+    return;
+  }
+
+  const details = state.transferDetails;
+  const accuracy = clampPercent(details.score);
+  const avgRt = Number(details.avgRt) || 0;
+  const errors = Number(details.errors) || 0;
+
+  $('batteryStatus').textContent = 'CONCLUÍDA';
+
+  $('testContent').innerHTML =
+    `<div class="result">
+      <span class="tag">ÚLTIMO RESULTADO</span>
+      <div class="score">${accuracy}%</div>
+      <h2>Bateria já realizada</h2>
+      <div class="battery-result">
+        <div class="metric-card"><strong>${accuracy}%</strong><span>precisão</span></div>
+        <div class="metric-card"><strong>${avgRt ? `${avgRt} ms` : '—'}</strong><span>tempo médio</span></div>
+        <div class="metric-card"><strong>${errors}</strong><span>erros</span></div>
+      </div>
+      <p class="muted">Você pode refazer a bateria para obter uma nova medida de desempenho nesta sessão.</p>
+      <div class="game-actions">
+        <button class="btn" id="redoBattery">Refazer bateria</button>
+        <button class="btn secondary" id="seeEvolution">Ver evolução</button>
+      </div>
+    </div>`;
+
+  $('redoBattery').addEventListener('click', restartBattery);
+  $('seeEvolution').addEventListener('click', () => openScreen('evolution'));
+}
+
+function renderRecords() {
+  const element = $('records');
+
+  if (!state.records.length) {
+    element.innerHTML = '<div class="empty">Nenhum participante registrado.</div>';
+    return;
+  }
+
+  element.innerHTML =
+    `<table class="table">
+      <thead>
+        <tr><th>ID</th><th>Grupo</th><th>Etapa</th><th>Data</th></tr>
+      </thead>
+      <tbody>
+        ${state.records.slice().reverse().map(record =>
+          `<tr>
+            <td>${escapeHtml(record.id)}</td>
+            <td>${escapeHtml(record.group)}</td>
+            <td>${escapeHtml(record.stage)}</td>
+            <td>${escapeHtml(record.time)}</td>
+          </tr>`
+        ).join('')}
+      </tbody>
+    </table>`;
+}
+
+function escapeHtml(value) {
+  return String(value ?? '').replace(/[&<>"']/g, character => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;'
+  })[character]);
+}
+
+$('saveParticipant').addEventListener('click', () => {
+  const id = $('participantId').value.trim() ||
+    `P${String(state.records.length + 1).padStart(3, '0')}`;
+
+  if (id.length > 40) {
+    toast('O ID do participante deve ter no máximo 40 caracteres.');
+    return;
+  }
+
+  state.records.push({
+    id,
+    group: $('participantGroup').value,
+    stage: $('participantStage').value,
+    time: new Date().toLocaleString('pt-BR')
+  });
+
+  // Evita crescimento ilimitado do localStorage em uso prolongado.
+  if (state.records.length > 1000) state.records = state.records.slice(-1000);
+
+  save();
+  $('participantId').value = '';
+  renderRecords();
+  toast('Participante registrado');
+});
+
+$('clearRecords').addEventListener('click', () => {
+  if (!state.records.length) return;
+
+  if (confirm('Apagar todos os registros locais?')) {
+    state.records = [];
+    save();
+    renderRecords();
+    toast('Registros apagados');
+  }
+});
+
+$('saveName').addEventListener('click', () => {
+  const name = ($('nameInput').value.trim() || 'Participante').slice(0, 60);
+
+  state.name = name;
+
+  try {
+    storageSet(STORAGE.name, name);
+  } catch {
+    toast('Nome definido apenas para esta sessão.');
+  }
+
+  setUser();
+  $('nameModal').classList.remove('show');
+});
+
+$('nameInput').addEventListener('keydown', event => {
+  if (event.key === 'Enter') $('saveName').click();
+});
+
+$('nameModal').addEventListener('click', event => {
+  if (event.target === $('nameModal')) {
+    $('nameInput').focus();
+  }
+});
+
+function init() {
+  setUser();
+  renderDashboard();
+  renderRecords();
+  renderTest();
+  renderEvolution();
+
+  if (!state.name) {
+    $('nameModal').classList.add('show');
+    setTimeout(() => $('nameInput').focus(), 0);
+  }
+}
+
+init();
+
+</script> </body> </html>
